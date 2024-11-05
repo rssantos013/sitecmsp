@@ -66,13 +66,13 @@ function createAndShowNotification(message) {
           height: 100%;
           background: linear-gradient(90deg, orange, #f0f);
           background-size: 200% auto;
-          animation: progressAnimation 5s linear forwards, gradientAnimation-218135ab 5s ease infinite;
+          animation: progressAnimation 5s linear forwards, gradientAnimation 5s ease infinite;
         }
         @keyframes progressAnimation {
           from { width: 100%; }
           to { width: 0; }
         }
-        @keyframes gradientAnimation-218135ab {
+        @keyframes gradientAnimation {
           0% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
           100% { background-position: 0% 50%; }
@@ -109,24 +109,15 @@ function createAndShowNotification(message) {
   });
 }
 
-createAndShowNotification("Site Criado por marcos10pc")
-createAndShowNotification("Design por ngx1305 - cmsphacks.xyz")
-//createAndShowNotification("Obrigado Joelmo por me ajudar com Problemas")
-createAndShowNotification("se vc pagou por isso vc foi scammado");
-
-function closeOverlay() {
-  document.getElementById("donationOverlay").style.display = "none";
-}
-
 async function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function fazerlicaonormal(ra, password, damn) {
+async function fetchLessons(ra, password, damn, lessonType) {
   if (ra === '' || password === '') {
       document.getElementById('ra').value = '';
       document.getElementById('pwd').value = '';
-      return alert('preeche os dadoskk');
+      return alert('Preencha os dados!');
   }
 
   createAndShowNotification("SE VC PAGOU POR ISSO VC FOI SCAMMADO");
@@ -138,7 +129,7 @@ async function fazerlicaonormal(ra, password, damn) {
 
   const pre_getinfo_response = await fetch(`https://doritus.mmrcoss.tech/getporra?ra=${raEncoded}&password=${passwordEncoded}&porra=${damn}`);
   if (!pre_getinfo_response.ok) {
-      createAndShowNotification('Erro ao entrar na conta :( tente dnv');
+      createAndShowNotification('Erro ao entrar na conta :( tente novamente');
       return;
   }
 
@@ -150,28 +141,30 @@ async function fazerlicaonormal(ra, password, damn) {
       const x_auth_key = getinfo_response.x_auth_key;
       const room_code = getinfo_response.room_code;
 
-      let getlessons_response = await fetch(`https://doritus.mmrcoss.tech/getlesson_normal_2?x_auth_key=${x_auth_key}&room_code=${room_code}&porra=${damn}`);
+      let getlessons_response = await fetch(`https://doritus.mmrcoss.tech/getlesson_${lessonType}?x_auth_key=${x_auth_key}&room_code=${room_code}&porra=${damn}`);
       if (!getlessons_response.ok) {
-          getlessons_response = await fetch(`https://doritus.mmrcoss.tech/getlesson_normal?x_auth_key=${x_auth_key}&room_code=${room_code}&porra=${damn}`);
+          getlessons_response = await fetch(`https://doritus.mmrcoss.tech/getlesson_${lessonType}_2?x_auth_key=${x_auth_key}&room_code=${room_code}&porra=${damn}`);
           if (!getlessons_response.ok) {
-              createAndShowNotification('Erro ao carregar licoes. Verifique sua conexão e tente novamente.');
+              createAndShowNotification('Erro ao carregar lições. Verifique sua conexão e tente novamente.');
               return;
           }
       }
-      const lessons = await getlessons_response.text();
 
-      createAndShowNotification("LICOES CARREGADAS COM SUCESSO!");
+      const lessons = await getlessons_response.text();
+      createAndShowNotification("LIÇÕES CARREGADAS COM SUCESSO!");
+
       if (lessons === '[]') {
-          createAndShowNotification("Nenhuma Licao Encontrada bruh");
+          createAndShowNotification("Nenhuma Lição Encontrada.");
       }
 
-      const catapimbas = JSON.parse(lessons); 
+      const catapimbas = JSON.parse(lessons);
       for (const lesson of catapimbas) {
           const titleUpper = lesson.title.toUpperCase();
           if (titleUpper.includes("SARESP")) {
               createAndShowNotification(`Ignorando a ATIVIDADE: ${lesson.title}`);
-              continue; 
+              continue;
           }
+
           createAndShowNotification(`FAZENDO LIÇÃO ${lesson.title}`);
           console.log(lesson.title);
 
@@ -179,50 +172,7 @@ async function fazerlicaonormal(ra, password, damn) {
               await delay(1000); 
               const dolesson_response = await fetch(`https://doritus.mmrcoss.tech/dolesso?x_auth_key=${x_auth_key}&room_code=${room_code}&lesson_id=${lesson.id}&porra=${damn}`);
               if (dolesson_response.ok) {
-                  console.log(`tuche, atividade ${lesson.title} FEITA!`);
-              } else {
-                  console.error(`Erro ao fazer a atividade ${lesson.title}`);
-                  createAndShowNotification(`Erro ao fazer a atividade ${lesson.title}. Tente novamente.`);
-              }
-          } catch (error) {
-              console.error('Erro na requisição dolesson:', error);
-              createAndShowNotification('Erro ao fazer a lição. Verifique sua conexão e tente novamente.');
-          }
-      }
-      
-      createAndShowNotification("Verificando se sobrou atividades em 30Segundos...")
-      await delay(30000);
-      
-      let getlessons_response_2 = await fetch(`https://doritus.mmrcoss.tech/getlesson_normal?x_auth_key=${x_auth_key}&room_code=${room_code}&porra=${damn}`);
-      if (!getlessons_response_2.ok) {
-          getlessons_response_2 = await fetch(`https://doritus.mmrcoss.tech/getlesson_normal?x_auth_key=${x_auth_key}&room_code=${room_code}&porra=${damn}`);
-          if (!getlessons_response_2.ok) {
-              createAndShowNotification('Erro ao carregar licoes. Verifique sua conexão e tente novamente.');
-              return;
-          }
-      }
-      const lessons_2 = await getlessons_response_2.text();
-
-      createAndShowNotification("LICOES CARREGADAS COM SUCESSO!");
-      if (lessons_2 === '[]') {
-          createAndShowNotification("Nenhuma Licao Encontrada bruh");
-      }
-
-      const catapimbas_2 = JSON.parse(lessons_2); 
-      for (const lesson of catapimbas_2) {
-          const titleUpper = lesson.title.toUpperCase();
-          if (titleUpper.includes("SARESP")) {
-              createAndShowNotification(`Ignorando a ATIVIDADE: ${lesson.title}`);
-              continue; 
-          }
-          createAndShowNotification(`FAZENDO LIÇÃO ${lesson.title}`);
-          console.log(lesson.title);
-
-          try {
-              await delay(1000); 
-              const dolesson_response = await fetch(`https://doritus.mmrcoss.tech/dolesso?x_auth_key=${x_auth_key}&room_code=${room_code}&lesson_id=${lesson.id}&porra=${damn}`);
-              if (dolesson_response.ok) {
-                  console.log(`tuche, atividade ${lesson.title} FEITA!`);
+                  console.log(`Atividade ${lesson.title} Feita!`);
               } else {
                   console.error(`Erro ao fazer a atividade ${lesson.title}`);
                   createAndShowNotification(`Erro ao fazer a atividade ${lesson.title}. Tente novamente.`);
@@ -238,118 +188,10 @@ async function fazerlicaonormal(ra, password, damn) {
   }
 }
 
+async function fazerlicaonormal(ra, password, damn) {
+  await fetchLessons(ra, password, damn, "normal");
+}
+
 async function fazerlicaoatrasada(ra, password, damn) {
-  if (ra === '' || password === '') {
-    document.getElementById('ra').value = '';
-    document.getElementById('pwd').value = '';
-    return alert('preeche os dadoskk');
-  } 
-
-  createAndShowNotification("SE VC PAGOU POR ISSO VC FOI SCAMMADO");
-  createAndShowNotification("PEGANDO INFORMACOES...");
-  createAndShowNotification("ATENCAO PODE DEMORAR UM TEMPO PARA APARECER A LICAO COMO CONCLUIDO");
-
-  const raEncoded = encodeURIComponent(ra);
-  const passwordEncoded = encodeURIComponent(password);
-
-  const pre_getinfo_response = await fetch(`https://doritus.mmrcoss.tech/getporra?ra=${raEncoded}&password=${passwordEncoded}&porra=${damn}`);
-  if (!pre_getinfo_response.ok) {
-      createAndShowNotification('Erro ao entrar na conta :( tente dnv');
-      return;
-  }
-
-  const getinfo_response = await pre_getinfo_response.json(); 
-
-  createAndShowNotification("LOGADO NA CONTA, PEGANDO LICOES...");
-
-  if (getinfo_response && getinfo_response.x_auth_key && getinfo_response.room_code) {
-      const x_auth_key = getinfo_response.x_auth_key;
-      const room_code = getinfo_response.room_code;
-
-      let getlessons_response = await fetch(`https://doritus.mmrcoss.tech/getlesson_expired_2?x_auth_key=${x_auth_key}&room_code=${room_code}&porra=${damn}`);
-      if (!getlessons_response.ok) {
-          getlessons_response = await fetch(`https://doritus.mmrcoss.tech/getlesson_expired?x_auth_key=${x_auth_key}&room_code=${room_code}&porra=${damn}`);
-          if (!getlessons_response.ok) {
-              createAndShowNotification('Erro ao carregar licoes. Verifique sua conexão e tente novamente.');
-              return;
-          }
-      }
-      const lessons = await getlessons_response.text();
-
-      createAndShowNotification("LICOES CARREGADAS COM SUCESSO!");
-      if (lessons === '[]') {
-          createAndShowNotification("Nenhuma Licao Encontrada bruh");
-      }
-
-      const catapimbas = JSON.parse(lessons); 
-      for (const lesson of catapimbas) {
-          const titleUpper = lesson.title.toUpperCase();
-          if (titleUpper.includes("SARESP")) {
-              createAndShowNotification(`Ignorando a ATIVIDADE: ${lesson.title}`);
-              continue; 
-          }
-          createAndShowNotification(`FAZENDO LIÇÃO ${lesson.title}`);
-          console.log(lesson.title);
-
-          try {
-              await delay(1000); 
-              const dolesson_response = await fetch(`https://doritus.mmrcoss.tech/dolesso?x_auth_key=${x_auth_key}&room_code=${room_code}&lesson_id=${lesson.id}&porra=${damn}`);
-              if (dolesson_response.ok) {
-                  console.log(`tuche, atividade ${lesson.title} FEITA!`);
-              } else {
-                  console.error(`Erro ao fazer a atividade ${lesson.title}`);
-                  createAndShowNotification(`Erro ao fazer a atividade ${lesson.title}. Tente novamente.`);
-              }
-          } catch (error) {
-              console.error('Erro na requisição dolesson:', error);
-              createAndShowNotification('Erro ao fazer a lição. Verifique sua conexão e tente novamente.');
-          }
-      }
-      
-      createAndShowNotification("Verificando se sobrou atividades em 30Segundos...")
-      await delay(30000);
-      
-      let getlessons_response_2 = await fetch(`https://doritus.mmrcoss.tech/getlesson_expired?x_auth_key=${x_auth_key}&room_code=${room_code}&porra=${damn}`);
-      if (!getlessons_response_2.ok) {
-          getlessons_response_2 = await fetch(`https://doritus.mmrcoss.tech/getlesson_expired?x_auth_key=${x_auth_key}&room_code=${room_code}&porra=${damn}`);
-          if (!getlessons_response_2.ok) {
-              createAndShowNotification('Erro ao carregar licoes. Verifique sua conexão e tente novamente.');
-              return;
-          }
-      }
-      const lessons_2 = await getlessons_response_2.text();
-
-      createAndShowNotification("LICOES CARREGADAS COM SUCESSO!");
-      if (lessons_2 === '[]') {
-          createAndShowNotification("Nenhuma Licao Encontrada bruh");
-      }
-
-      const catapimbas_2 = JSON.parse(lessons_2); 
-      for (const lesson of catapimbas_2) {
-          const titleUpper = lesson.title.toUpperCase();
-          if (titleUpper.includes("SARESP")) {
-              createAndShowNotification(`Ignorando a ATIVIDADE: ${lesson.title}`);
-              continue; 
-          }
-          createAndShowNotification(`FAZENDO LIÇÃO ${lesson.title}`);
-          console.log(lesson.title);
-
-          try {
-              await delay(1000); 
-              const dolesson_response = await fetch(`https://doritus.mmrcoss.tech/dolesso?x_auth_key=${x_auth_key}&room_code=${room_code}&lesson_id=${lesson.id}&porra=${damn}`);
-              if (dolesson_response.ok) {
-                  console.log(`tuche, atividade ${lesson.title} FEITA!`);
-              } else {
-                  console.error(`Erro ao fazer a atividade ${lesson.title}`);
-                  createAndShowNotification(`Erro ao fazer a atividade ${lesson.title}. Tente novamente.`);
-              }
-          } catch (error) {
-              console.error('Erro na requisição dolesson:', error);
-              createAndShowNotification('Erro ao fazer a lição. Verifique sua conexão e tente novamente.');
-          }
-      }
-  } else {
-      console.error('Resposta inválida do servidor');
-      createAndShowNotification('Erro ao carregar lições. Verifique sua conexão e tente novamente.');
-  }
+  await fetchLessons(ra, password, damn, "expired");
 }
