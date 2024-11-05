@@ -124,7 +124,7 @@
   <script type="text/javascript">
     // Função de verificação do CAPTCHA
     async function verifyCaptcha(funcName) {
-      const hcaptchaResponse = hcaptcha.getResponse();  // Correção: obtendo a resposta do hCaptcha
+      const hcaptchaResponse = hcaptcha.getResponse();  // Obtendo a resposta do hCaptcha
 
       if (hcaptchaResponse.length === 0) {
         alert('Por favor, complete o CAPTCHA');
@@ -146,23 +146,29 @@
           }),
         });
 
-        if (response.no) {
-          const key = await response.text();  // Obtemos a chave retornada do servidor
-
-          if (funcName === 'fazerlicaonormal') {
-            fazerlicaonormal(name, password, key);
-          } else if (funcName === 'fazerlicaoatrasada') {
-            fazerlicaoatrasada(name, password, key);
-          }
-        } else {
-          alert('Verificação do CAPTCHA falhou.');
+        const result = await response.json(); // Espera o retorno em JSON
+        if (!response.ok || !result.success) {
+          // Caso o servidor responda com erro
+          alert('Erro de verificar RECAPTCHA: ' + (result.error || 'Desconhecido'));
+          hcaptcha.reset();  // Resetando o CAPTCHA após falha
+          return;
         }
+
+        const key = result.key; // Assume-se que o backend retorna um campo 'key' se a verificação for bem-sucedida.
+
+        // Chama as funções apropriadas com a chave gerada
+        if (funcName === 'fazerlicaonormal') {
+          fazerlicaonormal(name, password, key);
+        } else if (funcName === 'fazerlicaoatrasada') {
+          fazerlicaoatrasada(name, password, key);
+        }
+
       } catch (error) {
         console.error('Erro ao verificar o CAPTCHA:', error);
-        alert('Erro ao verificar o CAPTCHA');
+        alert('Erro de verificar RECAPTCHA');
       }
 
-      hcaptcha.reset();  // Resetando o CAPTCHA após a verificação
+      hcaptcha.reset();  // Resetando o CAPTCHA após a verificação, independentemente de erro ou sucesso
     }
 
     // Função para alternar a visibilidade da senha
