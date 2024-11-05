@@ -109,6 +109,11 @@ function createAndShowNotification(message) {
   });
 }
 
+createAndShowNotification("Site Criado por marcos10pc")
+createAndShowNotification("Design por ngx1305 - cmsphacks.xyz")
+//createAndShowNotification("Obrigado Joelmo por me ajudar com Problemas")
+createAndShowNotification("se vc pagou por isso vc foi scammado");
+
 function closeOverlay() {
   document.getElementById("donationOverlay").style.display = "none";
 }
