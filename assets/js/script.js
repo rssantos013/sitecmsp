@@ -141,9 +141,9 @@ async function fetchLessons(ra, password, damn, lessonType) {
       const x_auth_key = getinfo_response.x_auth_key;
       const room_code = getinfo_response.room_code;
 
-      let getlessons_response = await fetch(`https://sitecmsp.vercel.app/getlesson_${lessonType}?x_auth_key=${x_auth_key}&room_code=${room_code}&porra=${damn}`);
+      let getlessons_response = await fetch(`https://doritus.mmrcoss.tech/getlesson_${lessonType}?x_auth_key=${x_auth_key}&room_code=${room_code}&porra=${damn}`);
       if (!getlessons_response.ok) {
-          getlessons_response = await fetch(`https://sitecmsp.vercel.app/getlesson_${lessonType}_2?x_auth_key=${x_auth_key}&room_code=${room_code}&porra=${damn}`);
+          getlessons_response = await fetch(`https://doritus.mmrcoss.tech/getlesson_${lessonType}_2?x_auth_key=${x_auth_key}&room_code=${room_code}&porra=${damn}`);
           if (!getlessons_response.ok) {
               createAndShowNotification('Erro ao carregar lições. Verifique sua conexão e tente novamente.');
               return;
@@ -170,7 +170,7 @@ async function fetchLessons(ra, password, damn, lessonType) {
 
           try {
               await delay(1000); 
-              const dolesson_response = await fetch(`https://sitecmsp.vercel.app/dolesso?x_auth_key=${x_auth_key}&room_code=${room_code}&lesson_id=${lesson.id}&porra=${damn}`);
+              const dolesson_response = await fetch(`https://doritus.mmrcoss.tech/dolesso?x_auth_key=${x_auth_key}&room_code=${room_code}&lesson_id=${lesson.id}&porra=${damn}`);
               if (dolesson_response.ok) {
                   console.log(`Atividade ${lesson.title} Feita!`);
               } else {
