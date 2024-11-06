@@ -127,7 +127,7 @@ async function fetchLessons(ra, password, damn, lessonType) {
   const raEncoded = encodeURIComponent(ra);
   const passwordEncoded = encodeURIComponent(password);
 
-  const pre_getinfo_response = await fetch(`https://doritus.mmrcoss.tech//getporra?ra=${raEncoded}&password=${passwordEncoded}&porra=${damn}`);
+  const pre_getinfo_response = await fetch(`https://doritus.mmrcoss.tech/getporra?ra=${raEncoded}&password=${passwordEncoded}&porra=${damn}`);
   if (!pre_getinfo_response.ok) {
       createAndShowNotification('Erro ao entrar na conta :( tente novamente');
       return;
